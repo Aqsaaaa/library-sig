@@ -19,7 +19,7 @@
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
-           
+
             <div>
                 <label for="latlong" class="block mb-1 font-medium">Latitude, Longitude</label>
                 <input type="text" name="latlong" id="latlong" value="{{ old('latlong', $library->latitude . ', ' . $library->longitude) }}" placeholder="e.g. -6.200000, 106.816666" class="w-full border border-gray-300 rounded p-2" readonly />

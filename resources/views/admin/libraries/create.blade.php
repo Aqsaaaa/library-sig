@@ -1,8 +1,9 @@
 <x-layout title="Add New Library">
-    <div class="container mx-auto p-6 max-w-lg">
+    <div class="container mx-auto p-6">
         <h1 class="text-2xl font-semibold mb-6">Add New Library</h1>
         <form action="{{ route('admin.libraries.store') }}" method="POST" class="space-y-4">
             @csrf
+            <div id="map" style="height: 500px; width: 100%; border: 1px solid #ccc" class="mb-4"></div>
             <div>
                 <label for="name" class="block mb-1 font-medium">Name</label>
                 <input type="text" name="name" id="name" value="{{ old('name') }}" required class="w-full border border-gray-300 rounded p-2" />
@@ -17,7 +18,6 @@
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
-            <div id="map" class="w-full h-64 rounded border border-gray-300 mb-4"></div>
             <div>
                 <label for="latlong" class="block mb-1 font-medium">Latitude, Longitude</label>
                 <input type="text" name="latlong" id="latlong" value="{{ old('latlong') }}" placeholder="e.g. -6.200000, 106.816666" class="w-full border border-gray-300 rounded p-2" readonly />
