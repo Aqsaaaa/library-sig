@@ -24,18 +24,6 @@
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
-            <div>
-                <label for="library_id" class="block mb-1 font-medium">Library</label>
-                <select name="library_id" id="library_id" required class="w-full border border-gray-300 rounded p-2">
-                    <option value="">Select Library</option>
-                    @foreach($libraries as $library)
-                        <option value="{{ $library->id }}" {{ old('library_id') == $library->id ? 'selected' : '' }}>{{ $library->name }}</option>
-                    @endforeach
-                </select>
-                @error('library_id')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
             <div class="flex space-x-4">
                 <a href="{{ route('admin.books.index') }}" class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100">Cancel</a>
                 <button type="submit" class="px-4 py-2 bg-[#f53003] text-white rounded hover:bg-red-600">Add Book</button>

@@ -24,4 +24,6 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('books', AdminBookController::class)->except(['show']);
     Route::resource('libraries', AdminLibraryController::class)->except(['show']);
+    Route::post('libraries/add-book', [AdminLibraryController::class, 'addBook'])->name('libraries.addBook');
+    Route::get('libraries/add-book', [AdminLibraryController::class, 'showAddBookForm'])->name('libraries.addBookForm');
 });

@@ -90,4 +90,42 @@ class AdminLibraryController extends Controller
         $library->delete();
         return redirect()->route('admin.libraries.index')->with('success', 'Lokasi perpustakaan dihapus.');
     }
+
+    public function addBook(Request $request)
+    {
+        $validated = $request->validate([
+            'book_id' => 'required|array',
+            'book_id.*' => 'exists:books,id',
+            'library_id' => 'required|exists:libraries,id',
+        ]);
+
+        $bookIds = $validated['book_id'];
+        $libraryId = $validated['library_id'];
+
+        $library = Library::findOrFail($libraryId);
+
+        // Attach the books to the library, ignoring duplicates
+        $library->books()->syncWithoutDetaching($bookIds);
+
+        return redirect()->route('admin.dashboard')->with('success', 'Buku berhasil ditambahkan ke perpustakaan.');
+    }
+
+    public function showAddBookForm(Request $request)
+    {
+        $libraries = Library::all();
+
+        $selectedLibraryId = $request->query('library_id');
+        $addedBooks = collect();
+        $availableBooks = \App\Models\Book::all();
+
+        if ($selectedLibraryId) {
+            $library = Library::find($selectedLibraryId);
+            if ($library) {
+                $addedBooks = $library->books;
+                $availableBooks = \App\Models\Book::whereNotIn('id', $addedBooks->pluck('id'))->get();
+            }
+        }
+
+        return view('admin.libraries.add-book', compact('libraries', 'addedBooks', 'availableBooks', 'selectedLibraryId'));
+    }
 }
