@@ -24,6 +24,7 @@ class AdminLibraryController extends Controller
             'name' => 'required|string|max:255',
             'address' => 'nullable|string|max:500',
             'latlong' => 'nullable|string|max:100',
+            'image' => 'nullable|image|max:2048',
         ]);
 
         // Parse latlong into latitude and longitude
@@ -43,6 +44,11 @@ class AdminLibraryController extends Controller
             'latitude' => $latitude,
             'longitude' => $longitude,
         ];
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('library_images', 'public');
+            $data['image'] = $path;
+        }
 
         Library::create($data);
 
@@ -60,6 +66,7 @@ class AdminLibraryController extends Controller
             'name' => 'required|string|max:255',
             'address' => 'nullable|string|max:500',
             'latlong' => 'nullable|string|max:100',
+            'image' => 'nullable|image|max:2048',
         ]);
 
         // Parse latlong into latitude and longitude
@@ -79,6 +86,15 @@ class AdminLibraryController extends Controller
             'latitude' => $latitude,
             'longitude' => $longitude,
         ];
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($library->image && \Storage::disk('public')->exists($library->image)) {
+                \Storage::disk('public')->delete($library->image);
+            }
+            $path = $request->file('image')->store('library_images', 'public');
+            $data['image'] = $path;
+        }
 
         $library->update($data);
 

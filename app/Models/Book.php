@@ -12,7 +12,11 @@ class Book extends Model
     protected $fillable = [
         'title',
         'author',
+        'publisher',
+        'description',
         'published_at',
+        'image',
+        'total_pages',
     ];
 
     protected $casts = [

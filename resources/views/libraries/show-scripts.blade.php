@@ -11,7 +11,6 @@
     var marker = L.marker([{{ $library->latitude }}, {{ $library->longitude }}]).addTo(map);
     marker.bindPopup('<b>{{ $library->name }}</b><br>{{ $library->address }}').openPopup();
 
-    // Draw a more accurate polyline track from user location to library
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             var userLat = position.coords.latitude;
@@ -23,10 +22,8 @@
             ];
             var polyline = L.polyline(latlngs, {color: 'blue'}).addTo(map);
 
-            // Zoom the map to the polyline
             map.fitBounds(polyline.getBounds());
 
-            // Haversine distance calculation
             function toRad(x) {
                 return x * Math.PI / 180;
             }

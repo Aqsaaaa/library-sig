@@ -2,7 +2,7 @@
     <div class="container mx-auto p-6">
         <h1 class="text-2xl font-semibold mb-6 text-center">Edit Library</h1>
         <div id="map" style="height: 500px; width: 100%; border: 1px solid #ccc" class="mb-4"></div>
-        <form action="{{ route('admin.libraries.update', $library) }}" method="POST" class="space-y-4">
+        <form action="{{ route('admin.libraries.update', $library) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @method('PUT')
             <div>
@@ -24,6 +24,16 @@
                 <label for="latlong" class="block mb-1 font-medium">Latitude, Longitude</label>
                 <input type="text" name="latlong" id="latlong" value="{{ old('latlong', $library->latitude . ', ' . $library->longitude) }}" placeholder="e.g. -6.200000, 106.816666" class="w-full border border-gray-300 rounded p-2"/>
                 @error('latlong')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+            <div>
+                <label for="image" class="block mb-1 font-medium">Library Image</label>
+                @if($library->image)
+                    <img src="{{ asset('storage/' . $library->image) }}" alt="Library Image" class="mb-2 max-h-40">
+                @endif
+                <input type="file" name="image" id="image" accept="image/*" class="w-full border border-gray-300 rounded p-2" />
+                @error('image')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>

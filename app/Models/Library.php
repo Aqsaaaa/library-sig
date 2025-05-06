@@ -14,6 +14,7 @@ class Library extends Model
         'address',
         'latitude',
         'longitude',
+        'image',
     ];
 
     public function books()

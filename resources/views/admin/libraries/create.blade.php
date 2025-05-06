@@ -1,7 +1,7 @@
 <x-layout title="Add New Library">
     <div class="container mx-auto p-6">
         <h1 class="text-2xl font-semibold mb-6">Add New Library</h1>
-        <form action="{{ route('admin.libraries.store') }}" method="POST" class="space-y-4">
+        <form action="{{ route('admin.libraries.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             <div id="map" style="height: 500px; width: 100%; border: 1px solid #ccc" class="mb-4"></div>
             <div>
@@ -22,6 +22,13 @@
                 <label for="latlong" class="block mb-1 font-medium">Latitude, Longitude</label>
                 <input type="text" name="latlong" id="latlong" value="{{ old('latlong') }}" placeholder="e.g. -6.200000, 106.816666" class="w-full border border-gray-300 rounded p-2"/>
                 @error('latlong')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
+            </div>
+            <div>
+                <label for="image" class="block mb-1 font-medium">Library Image</label>
+                <input type="file" name="image" id="image" accept="image/*" class="w-full border border-gray-300 rounded p-2" />
+                @error('image')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>

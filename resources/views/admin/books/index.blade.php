@@ -9,29 +9,29 @@
                 {{ session('success') }}
             </div>
         @endif
-        <table class="min-w-full bg-white border border-gray-200 rounded">
+        <table class="min-w-full min-h-full bg-white border border-gray-200 rounded">
             <thead>
                 <tr class="bg-gray-100">
+                    <th class="py-2 px-4 border-b">Image</th>
                     <th class="py-2 px-4 border-b">Title</th>
+                    <th class="py-2 px-4 border-b">Description</th>
                     <th class="py-2 px-4 border-b">Author</th>
+                    <th class="py-2 px-4 border-b">Publisher</th>
+                    <th class="py-2 px-4 border-b">Total Page</th>
                     <th class="py-2 px-4 border-b">Published At</th>
-                    <th class="py-2 px-4 border-b">Library</th>
                     <th class="py-2 px-4 border-b">Actions</th>
                 </tr>
             </thead>
             <tbody class="text-center">
                 @foreach($books as $book)
                 <tr>
+                    <td class="py-2 px-4 border-b"><img src="{{ asset('storage/' . $book->image) }}" alt="Book Image" class="h-20 mx-auto mb-2" /></td>
                     <td class="py-2 px-4 border-b">{{ $book->title }}</td>
+                    <td class="py-2 px-4 border-b">{{ $book->description }}</td>
                     <td class="py-2 px-4 border-b">{{ $book->author }}</td>
-                    <td class="py-2 px-4 border-b">{{ $book->published_at ? $book->published_at->format('Y-m-d') : '-' }}</td>
-                    <td class="py-2 px-4 border-b">
-                        @if($book->libraries->isNotEmpty())
-                            {{ $book->libraries->pluck('name')->join(', ') }}
-                        @else
-                            -
-                        @endif
-                    </td>
+                    <td class="py-2 px-4 border-b">{{ $book->publisher }}</td>
+                    <td class="py-2 px-4 border-b">{{ $book->total_pages}} Page</td>
+                    <td class="py-2 px-4 border-b">{{ $book->published_at ? $book->published_at->format('Y') : '-' }}</td>
                     <td class="py-2 px-4 border-b space-x-2">
                         <a href="{{ route('admin.books.edit', $book) }}" class="text-blue-600 hover:underline">Edit</a>
                         <form action="{{ route('admin.books.destroy', $book) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this book?');">

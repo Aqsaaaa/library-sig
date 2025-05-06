@@ -41,14 +41,12 @@
                 var userLat = position.coords.latitude;
                 var userLon = position.coords.longitude;
 
-                // Blue polyline from user to library
                 var latlngs = [
                     [userLat, userLon],
                     [{{ $library->latitude }}, {{ $library->longitude }}]
                 ];
                 var polyline = L.polyline(latlngs, {color: 'blue'}).addTo(map);
 
-                // Red routing line using Leaflet Routing Machine
                 var control = L.Routing.control({
                     waypoints: [
                         L.latLng(userLat, userLon),
@@ -65,18 +63,17 @@
                     showAlternatives: false
                 }).addTo(map);
 
-                // Update route info panel
                 control.on('routesfound', function(e) {
                     var routes = e.routes;
                     var summary = routes[0].summary;
                     var distanceKm = (summary.totalDistance / 1000).toFixed(2);
                     var timeMin = Math.round(summary.totalTime / 60);
                     document.getElementById('route-info').innerHTML =
-                        '<p><strong>Distance:</strong> ' + distanceKm + ' km</p>' +
-                        '<p><strong>Estimated time:</strong> ' + timeMin + ' minutes</p>';
+                    '<p><strong>Straght Lines (Blue):</strong> ' + distance.toFixed(2) + ' km</p>' +
+                    '<p><strong>Distance Lines (Red):</strong> ' + distanceKm + ' km</p>' +
+                    '<p><strong>Estimated time:</strong> ' + timeMin + ' minutes</p>';
                 });
 
-                // Haversine distance calculation
                 function toRad(x) {
                     return x * Math.PI / 180;
                 }
@@ -88,8 +85,6 @@
                         Math.sin(dLon / 2) * Math.sin(dLon / 2);
                 var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
                 var distance = R * c;
-
-                document.getElementById('distance').textContent = 'Straight-line distance: ' + distance.toFixed(2) + ' km';
             }, function(error) {
                 document.getElementById('distance').textContent = 'Unable to retrieve your location for distance calculation.';
                 document.getElementById('route-info').textContent = 'Unable to retrieve your location for route calculation.';

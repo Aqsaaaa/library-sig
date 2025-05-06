@@ -1,6 +1,6 @@
 <x-layout title="Libraries List">
     <div class="container mx-auto p-6">
-        <h1 class="text-2xl font-semibold mb-6">Libraries List</h1>
+        <h1 class="text-2xl font-semibold mb-6 text-center">Libraries List</h1>
         @if($libraries->isEmpty())
             <p>No libraries found.</p>
         @else
