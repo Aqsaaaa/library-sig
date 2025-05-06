@@ -20,7 +20,7 @@
             </div>
             <div>
                 <label for="latlong" class="block mb-1 font-medium">Latitude, Longitude</label>
-                <input type="text" name="latlong" id="latlong" value="{{ old('latlong') }}" placeholder="e.g. -6.200000, 106.816666" class="w-full border border-gray-300 rounded p-2" readonly />
+                <input type="text" name="latlong" id="latlong" value="{{ old('latlong') }}" placeholder="e.g. -6.200000, 106.816666" class="w-full border border-gray-300 rounded p-2"/>
                 @error('latlong')
                     <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                 @enderror
@@ -44,9 +44,28 @@
 
         var marker = L.marker([-6.200000, 106.816666], {draggable:true}).addTo(map);
 
+        function updatePopup() {
+            var name = document.getElementById('name').value || 'Unnamed Library';
+            var address = document.getElementById('address').value || 'No address provided';
+            marker.bindPopup('<b>' + name + '</b><br>' + address).openPopup();
+        }
+
         marker.on('dragend', function(e) {
             var latlng = marker.getLatLng();
             document.getElementById('latlong').value = latlng.lat.toFixed(6) + ', ' + latlng.lng.toFixed(6);
+            updatePopup();
+        });
+
+        document.getElementById('address').addEventListener('change', function() {
+            var address = this.value;
+            if (address.length > 5) {
+                geocodeAddress(address);
+            }
+            updatePopup();
+        });
+
+        document.getElementById('name').addEventListener('input', function() {
+            updatePopup();
         });
 
         function geocodeAddress(address) {
@@ -59,15 +78,11 @@
                         marker.setLatLng([lat, lon]);
                         map.setView([lat, lon], 13);
                         document.getElementById('latlong').value = lat.toFixed(6) + ', ' + lon.toFixed(6);
+                        updatePopup();
                     }
                 });
         }
 
-        document.getElementById('address').addEventListener('change', function() {
-            var address = this.value;
-            if (address.length > 5) {
-                geocodeAddress(address);
-            }
-        });
+        updatePopup();
     </script>
 </x-layout>
