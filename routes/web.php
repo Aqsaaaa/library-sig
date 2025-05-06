@@ -7,9 +7,14 @@ use App\Http\Controllers\AdminController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\AdminBookController;
 use App\Http\Controllers\AdminLibraryController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\LibraryController;
 
 
 Route::get('/', [AuthController::class, 'dashboard'])->middleware('auth')->name('dashboard');
+Route::get('/books', [BookController::class, 'index'])->name('books');
+Route::get('/libraries', [LibraryController::class, 'index'])->name('libraries');
+Route::get('/libraries/{library}', [LibraryController::class, 'show'])->name('libraries.show');
 
 //AUTH ROUTES
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

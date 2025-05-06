@@ -12,7 +12,7 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::with('libraries')->get();
-        return view('books.index', compact('books'));
+        return view('books', compact('books'));
     }
 
     // Form tambah buku

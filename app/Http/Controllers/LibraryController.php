@@ -11,7 +11,7 @@ class LibraryController extends Controller
     public function index()
     {
         $libraries = Library::with('books')->get();
-        return view('libraries.index', compact('libraries'));
+        return view('libraries', compact('libraries'));
     }
 
     // Form tambah perpustakaan

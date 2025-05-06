@@ -45,8 +45,7 @@ class AdminBookController extends Controller
             'title' => 'required|string|max:255',
             'author' => 'required|string|max:255',
             'published_at' => 'nullable|date',
-            // 'libraries' => 'required|array',
-            // 'libraries.*' => 'exists:libraries,id',
+        
         ]);
 
         $book->update($validated);
