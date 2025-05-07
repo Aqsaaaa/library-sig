@@ -69,8 +69,8 @@
                     var distanceKm = (summary.totalDistance / 1000).toFixed(2);
                     var timeMin = Math.round(summary.totalTime / 60);
                     document.getElementById('route-info').innerHTML =
-                    '<p><strong>Straght Lines (Blue):</strong> ' + distance.toFixed(2) + ' km</p>' +
-                    '<p><strong>Distance Lines (Red):</strong> ' + distanceKm + ' km</p>' +
+                    '<p><strong>Straight Lines (Blue):</strong> ' + distance.toFixed(2) + ' km</p>' +
+                    '<p><strong>Route Lines (Red):</strong> ' + distanceKm + ' km</p>' +
                     '<p><strong>Estimated time:</strong> ' + timeMin + ' minutes</p>';
                 });
 

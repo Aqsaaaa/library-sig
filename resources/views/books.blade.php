@@ -5,7 +5,7 @@
             <p>No books found.</p>
         @endif
             @foreach($books as $book)
-            <a href="#" class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row hover:bg-gray-100">
+            <a href="{{ route('admin.books.show', $book) }}" class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow-sm md:flex-row hover:bg-gray-100">
                 <img class="object-cover w-full h-96 md:h-auto md:w-48 p-4 rounded-lg md:rounded-s-lg" src="{{ asset('storage/' . $book->image) }}" alt="Cover Image">
                 <div class="flex flex-col justify-between p-4 leading-normal">
                     <p class="font-bold text-gray-900">Title</p>

@@ -28,6 +28,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::resource('books', AdminBookController::class)->except(['show']);
+    Route::get('books/{book}', [App\Http\Controllers\AdminBookController::class, 'show'])->name('books.show');
     Route::resource('libraries', AdminLibraryController::class)->except(['show']);
     Route::post('libraries/add-book', [AdminLibraryController::class, 'addBook'])->name('libraries.addBook');
     Route::get('libraries/add-book', [AdminLibraryController::class, 'showAddBookForm'])->name('libraries.addBookForm');

@@ -76,6 +76,12 @@ class AdminBookController extends Controller
         return redirect()->route('admin.books.index')->with('success', 'Buku diperbarui.');
     }
 
+    public function show(Book $book)
+    {
+        $book->load('libraries');
+        return view('admin.books.show', compact('book'));
+    }
+
     public function destroy(Book $book)
     {
         $book->delete();
