@@ -1,23 +1,41 @@
 <x-layout :title="'Library Details - ' . $library->name">
     <div class="container mx-auto space-x-6">
         <div class="flex-1">
-            <div class="flex justify-between items-center mb-4">
-                <div>
-                    <h1 class="text-2xl font-semibold mb-4">{{ $library->name }}</h1>
-                    <p class="mb-2"><strong>Address:</strong> {{ $library->address }}</p>
-                </div>
+            <div class="flex space-x-6 items-center mb-4 mx-auto">
                 <div class="w-96 p-4 border border-gray-300 rounded">
-                    <h2 class="text-xl font-semibold mb-2">Route Details</h2>
-                    <div id="route-info" class="text-sm text-gray-700">
+                    @if($library->image)
+                        <img src="{{ asset('storage/' . $library->image) }}" alt="Library Image" class="mb-4 max-h-60 rounded">
+                    @endif
+                    <div id="route-info" class="text-sm">
                         Loading route information...
                     </div>
                 </div>
+                <div class="flex-1">
+                    <h1 class="text-2xl font-semibold mb-4">{{ $library->name }}</h1>
+                    <small class="mb-2 text-gray-500 font-semibold"> {{ $library->address }}</small>
+                </div>
             </div>
-            
             <div id="map" style="height: 500px; width: 100%; border: 1px solid #ccc;" class="mb-4"></div>
-            <p id="distance" class="mt-2"></p>
         </div>
-        
+        <div class="container mx-auto mt-6">
+            <h2 class="text-xl font-semibold mb-4">Books in this Library</h2>
+            @if($library->books->isEmpty())
+                <p>No books found in this library.</p>
+            @else
+                <ul class="list-disc pl-5 space-y-2">
+                    @foreach($library->books as $book)
+                        <li>
+                        <span class="text-gray-900 font-semibold">
+                            {{ $book->title }}
+                        </span>
+                        @if($book->author)
+                            <span class="text-gray-600">by {{ $book->author }}</span>
+                        @endif
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
     </div>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"

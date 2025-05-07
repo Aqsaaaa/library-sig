@@ -6,19 +6,19 @@
             <img class="object-cover w-full h-96 md:h-auto md:w-48 p-4 rounded-lg md:rounded-s-lg" src="{{ asset('storage/' . $book->image) }}" alt="Cover Image">
             @endif
             <div class="grid items-center">
-                <p><strong>Title:</strong></p>
-                <small>{{ $book->title }}</small>
-                <p><strong>Author:</strong> </p>
-                    {{ $book->author }}
-                <p><strong>Publisher:</strong> </p>
-                {{ $book->publisher }}
-                <p><strong>Published Date:</strong> </p>
-                {{ $book->published_at ? $book->published_at->format('j F, Y') : '-' }}
-                <p><strong>Total Pages:</strong></p>
-                {{ $book->total_pages }} Pages
+                <p>Title :</p>
+                <strong><small>{{ $book->title }}</small></strong>
+                <p>Author :</p>
+                <strong><small>{{ $book->author }}</small></strong>
+                <p>Publisher :</p>
+                <strong><small>{{ $book->publisher }}</small></strong>
+                <p>Published Date :</p>
+                <strong><small>{{ $book->published_at ? $book->published_at->format('j F, Y') : '-' }}</small></strong>
+                <p>Total Pages :</p>
+                <strong><small>{{ $book->total_pages }} Pages</small></strong>
             </div>
             <div class="mb-6 mx-20">
-                <h2 class="text-xl font-semibold mb-2">Description</h2>
+                <h2 class="text-xl font-semibold mb-2">Description :</h2>
                 <p class="whitespace-pre-line">{{ $book->description }}</p>
             </div>
         </div>

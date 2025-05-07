@@ -12,6 +12,7 @@
         <table class="min-w-full bg-white border border-gray-200 rounded">
             <thead>
                 <tr class="bg-gray-100">
+                    <th class="py-2 px-4 border-b">Image</th>
                     <th class="py-2 px-4 border-b">Name</th>
                     <th class="py-2 px-4 border-b">Address</th>
                     <th class="py-2 px-4 border-b">LatLong</th>
@@ -21,6 +22,13 @@
             <tbody class="text-center">
                 @foreach($libraries as $library)
                 <tr>
+                    <td class="py-2 px-4 border-b">
+                        @if($library->image)
+                            <img src="{{ asset('storage/' . $library->image) }}" alt="Library Image" class="mx-auto max-h-16 rounded">
+                        @else
+                            -
+                        @endif
+                    </td>
                     <td class="py-2 px-4 border-b">{{ $library->name }}</td>
                     <td class="py-2 px-4 border-b">{{ $library->address ?? '-' }}</td>
                     <td class="py-2 px-4 border-b">{{ $library->latitude . ', ' . $library->longitude ?? '-' }}</td>
