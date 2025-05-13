@@ -9,10 +9,20 @@ use Illuminate\Http\Request;
 class BookController extends Controller
 {
     // Daftar buku (bisa difilter per perpustakaan)
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::with('libraries')->get();
-        return view('books', compact('books'));
+        $query = $request->input('search');
+
+        $books = Book::with('libraries')
+            ->when($query, function ($q) use ($query) {
+                $q->where('title', 'like', '%' . $query . '%')
+                  ->orWhere('author', 'like', '%' . $query . '%')
+                  ->orWhere('publisher', 'like', '%' . $query . '%')
+                  ->orWhere('description', 'like', '%' . $query . '%');
+            })
+            ->get();
+
+        return view('books', compact('books', 'query'));
     }
 
     // Form tambah buku

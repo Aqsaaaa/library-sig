@@ -8,10 +8,20 @@ use Illuminate\Http\Request;
 
 class AdminBookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::with('libraries')->get();
-        return view('admin.books.index', compact('books'));
+        $query = $request->input('search');
+
+        $books = Book::with('libraries')
+            ->when($query, function ($q) use ($query) {
+                $q->where('title', 'like', '%' . $query . '%')
+                  ->orWhere('author', 'like', '%' . $query . '%')
+                  ->orWhere('publisher', 'like', '%' . $query . '%')
+                  ->orWhere('description', 'like', '%' . $query . '%');
+            })
+            ->get();
+
+        return view('admin.books.index', compact('books', 'query'));
     }
 
     public function create()

@@ -120,8 +120,8 @@ class AdminLibraryController extends Controller
 
         $library = Library::findOrFail($libraryId);
 
-        // Attach the books to the library, ignoring duplicates
-        $library->books()->syncWithoutDetaching($bookIds);
+        // Sync the books to the library, adding and removing as needed
+        $library->books()->sync($bookIds);
 
         return redirect()->route('admin.dashboard')->with('success', 'Buku berhasil ditambahkan ke perpustakaan.');
     }

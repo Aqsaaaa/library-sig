@@ -31,7 +31,11 @@
                 @else
                     <ul class="list-disc list-inside">
                         @foreach($book->libraries as $library)
-                            <li>{{ $library->name }} - {{ $library->address ?? '' }}</li>
+                            <li>
+                                <a href="{{ route('libraries.show', $library) }}">
+                                    {{ $library->name }} - {{ $library->address ?? '' }}
+                                </a>
+                            </li>
                         @endforeach
                     </ul>
                 @endif

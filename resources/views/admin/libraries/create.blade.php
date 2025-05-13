@@ -76,17 +76,42 @@
         });
 
         function geocodeAddress(address) {
-            fetch('https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(address))
+            fetch('https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=' + encodeURIComponent(address))
                 .then(response => response.json())
                 .then(data => {
                     if (data && data.length > 0) {
-                        var lat = parseFloat(data[0].lat);
-                        var lon = parseFloat(data[0].lon);
+                        var result = data[0];
+                        var lat = parseFloat(result.lat);
+                        var lon = parseFloat(result.lon);
                         marker.setLatLng([lat, lon]);
                         map.setView([lat, lon], 13);
                         document.getElementById('latlong').value = lat.toFixed(6) + ', ' + lon.toFixed(6);
+
+                        // Parse address components
+                        var addr = result.address || {};
+                        var formattedAddress = '';
+                        if (addr.road) formattedAddress += addr.road + ', ';
+                        if (addr.house_number) formattedAddress +=  'no.' + addr.house_number + ', ';
+                        if (addr.suburb) formattedAddress += addr.suburb + ', ';
+                        if (addr.city) formattedAddress += addr.city + ', ';
+                        if (addr.state) formattedAddress += addr.state + ', ';
+                        if (addr.country) formattedAddress += addr.country + ', ';
+                        if (addr.postcode) formattedAddress += addr.postcode ;
+
+                        // Remove trailing comma and space
+                        formattedAddress = formattedAddress.replace(/, $/, '');
+
+                        // Update address textarea with formatted address
+                        document.getElementById('address').value = formattedAddress;
+
                         updatePopup();
+                    } else {
+                        alert('Alamat tidak ditemukan. Silakan periksa kembali atau masukkan koordinat secara manual.');
                     }
+                })
+                .catch(error => {
+                    console.error('Error saat melakukan geocoding:', error);
+                    alert('Terjadi kesalahan saat mencari alamat. Silakan coba lagi nanti.');
                 });
         }
 

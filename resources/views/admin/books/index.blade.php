@@ -4,6 +4,15 @@
             <h1 class="text-2xl font-semibold">Manage Books</h1>
             <a href="{{ route('admin.books.create') }}" class="px-4 py-2 bg-[#f53003] text-white rounded hover:bg-red-600">Add New Book</a>
         </div>
+        <form method="GET" action="{{ route('admin.books.index') }}" class="mb-4">
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search', $query ?? '') }}"
+                placeholder="Search books..."
+                class="border border-gray-300 rounded px-3 py-2 w-full max-w-sm"
+            />
+        </form>
         @if(session('success'))
             <div class="mb-4 p-4 bg-green-100 text-green-700 rounded">
                 {{ session('success') }}
@@ -44,7 +53,7 @@
                 @endforeach
                 @if($books->isEmpty())
                 <tr>
-                    <td colspan="5" class="text-center py-4">No books found.</td>
+                    <td colspan="8" class="text-center py-4">No books found.</td>
                 </tr>
                 @endif
             </tbody>
