@@ -5,13 +5,14 @@
             <div id="map" class="w-full h-96 rounded"></div>
             <div class="mt-4 flex space-x-4">
                 <button id="gpsToggleBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">GPS On</button>
-                <button id="toggleLinesBtn" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" data-active="false">Show Lines</button>
+                <button id="toggleLinesBtn" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" data-active="false">Show All Lines</button>
             </div>
             <div id="libraryList" class="mt-6 max-w-full overflow-x-auto">
                 <table class="min-w-full border border-gray-300 rounded-md mb-1">
                     <thead class="bg-gray-100">
                         <tr>
-                            <th class="border border-gray-300 px-4 py-2 text-left">Library</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Image</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left">Name Of Library</th>
                             <th class="border border-gray-300 px-4 py-2 text-left">Distance (km)</th>
                             <th class="border border-gray-300 px-4 py-2 text-left">Action</th>
                         </tr>
@@ -41,19 +42,20 @@
         const libraries = [
             @foreach ($libraries as $library)
                 {
+                    id: {{ $library->id }},
+                    image: '<img src="@if($library->image){{ asset('storage/' . $library->image) }}@else{{ asset('icon/library-building-icon.svg') }}@endif" alt="Library Image" class="h-20 mx-auto mb-2" />',
                     name: "{{ $library->name }}",
                     latitude: {{ $library->latitude }},
                     longitude: {{ $library->longitude }}
                 },
             @endforeach
-        ];
-
-        // Store markers in an array for panning
-        const libraryMarkers = [];
+            ]
+        // Store markers in a map for panning by library id
+        const libraryMarkersMap = new Map();
         libraries.forEach(library => {
             const marker = L.marker([library.latitude, library.longitude]).addTo(map)
                 .bindPopup(`<b>${library.name}</b>`);
-            libraryMarkers.push(marker);
+            libraryMarkersMap.set(library.id, marker);
         });
 
         let userMarker = null;
@@ -101,10 +103,11 @@
                     ).toFixed(2);
                 }
                 rows += `<tr>
+                    <td class="border border-gray-300 px-4 py-2">${library.image}</td>
                     <td class="border border-gray-300 px-4 py-2">${library.name}</td>
                     <td class="border border-gray-300 px-4 py-2">${library.distance.toFixed(2)} Km</td>
                     <td class="border border-gray-300 px-4 py-2">
-                        <button onclick="panToMarker(${i})" class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">Go to Marker</button>
+                        <button onclick="panToMarker(${library.id})" class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">Go to Marker</button>
                         <a href="https://www.google.com/maps/search/?api=1&query=${library.latitude},${library.longitude}" target="_blank" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">Open Maps</a>
                     </td>
                 </tr>`;
@@ -187,8 +190,8 @@
             }
         });
 
-        function panToMarker(index) {
-            const marker = libraryMarkers[index];
+        function panToMarker(libraryId) {
+            const marker = libraryMarkersMap.get(libraryId);
             if (marker) {
                 map.setView(marker.getLatLng(), 15);
                 marker.openPopup();
@@ -199,11 +202,11 @@
             if (toggleLinesBtn.dataset.active === 'true') {
                 clearLines();
                 toggleLinesBtn.dataset.active = 'false';
-                toggleLinesBtn.textContent = 'Show Lines';
+                toggleLinesBtn.textContent = 'Show All Lines';
             } else {
                 drawLines();
                 toggleLinesBtn.dataset.active = 'true';
-                toggleLinesBtn.textContent = 'Hide Lines';
+                toggleLinesBtn.textContent = 'Hide All Lines';
             }
         });
 
@@ -336,10 +339,11 @@
                     ).toFixed(2);
                 }
                 rows += `<tr>
+                    <td class="border border-gray-300 px-4 py-2">${library.image}</td>
                     <td class="border border-gray-300 px-4 py-2">${library.name}</td>
                     <td class="border border-gray-300 px-4 py-2">${library.distance.toFixed(2)} Km</td>
                     <td class="border border-gray-300 px-4 py-2">
-                        <button onclick="panToMarker(${i})" class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">Go to Marker</button>
+                        <button onclick="panToMarker(${library.id})" class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">Go to Marker</button>
                         <a href="https://www.google.com/maps/search/?api=1&query=${library.latitude},${library.longitude}" target="_blank" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">Open Maps</a>
                     </td>
                 </tr>`;
@@ -351,4 +355,5 @@
         }
     </script>
 </x-layout>
+
 
