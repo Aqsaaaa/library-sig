@@ -71,6 +71,30 @@
             updatePopup();
         });
 
+
+        // Create the button element with improved styling for better appearance
+        var generateAddressBtn = document.createElement('button');
+        generateAddressBtn.type = 'button';
+        generateAddressBtn.textContent = 'search';
+        generateAddressBtn.className = 'absolute right-2 top-1 transform -translate-y-1/2 px-4 bg-blue-600 text-white rounded shadow-md hover:bg-blue-700 transition duration-300 ease-in-out';
+
+        // Insert the button inside the name input container
+        var nameInput = document.getElementById('name');
+        var nameInputContainer = nameInput.parentNode;
+        nameInputContainer.style.position = 'relative';
+        nameInputContainer.appendChild(generateAddressBtn);
+
+        // Add click event to the button to trigger geocoding
+        generateAddressBtn.addEventListener('click', function() {
+            var name = nameInput.value;
+            if (name.length > 3) {
+                geocodeAddress(name);
+            } else {
+                alert('Please enter at least 4 characters in the name field to generate address.');
+            }
+        });
+
+        // Keep the updatePopup call on name input for popup update only
         document.getElementById('name').addEventListener('input', function() {
             updatePopup();
         });

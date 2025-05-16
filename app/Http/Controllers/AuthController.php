@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Library;
 
 class AuthController extends Controller
 {
@@ -15,10 +16,11 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // Show dashboard
+
     public function dashboard()
     {
-        return view('dashboard');
+        $libraries = Library::all();
+        return view('dashboard', compact('libraries'));
     }
 
     // Handle login request
