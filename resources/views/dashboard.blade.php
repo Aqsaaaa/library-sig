@@ -48,10 +48,12 @@
             @endforeach
         ];
 
-        // Add markers for libraries
+        // Store markers in an array for panning
+        const libraryMarkers = [];
         libraries.forEach(library => {
-            L.marker([library.latitude, library.longitude]).addTo(map)
+            const marker = L.marker([library.latitude, library.longitude]).addTo(map)
                 .bindPopup(`<b>${library.name}</b>`);
+            libraryMarkers.push(marker);
         });
 
         let userMarker = null;
@@ -185,6 +187,14 @@
             }
         });
 
+        function panToMarker(index) {
+            const marker = libraryMarkers[index];
+            if (marker) {
+                map.setView(marker.getLatLng(), 15);
+                marker.openPopup();
+            }
+        }
+
         toggleLinesBtn.addEventListener('click', () => {
             if (toggleLinesBtn.dataset.active === 'true') {
                 clearLines();
@@ -198,6 +208,147 @@
         });
 
         startGPS();
+    </script>
+
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            gap: 0.5rem;
+        }
+        .pagination button {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid #ccc;
+            background-color: white;
+            cursor: pointer;
+            border-radius: 0.25rem;
+        }
+        .pagination button.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .pagination button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+    </style>
+
+    <script>
+        // Generic client-side pagination for tables
+        let paginationInstances = {};
+        function paginateTable(tableId, rowsPerPage = 5) {
+            const table = document.getElementById(tableId);
+            if (!table) return;
+
+            if (paginationInstances[tableId]) {
+                const oldPagination = paginationInstances[tableId].paginationElement;
+                if (oldPagination && oldPagination.parentNode) {
+                    oldPagination.parentNode.removeChild(oldPagination);
+                }
+            }
+
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const totalRows = rows.length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+            let currentPage = 1;
+
+            function renderPage(page) {
+                currentPage = page;
+                const start = (page - 1) * rowsPerPage;
+                const end = start + rowsPerPage;
+
+                rows.forEach((row, index) => {
+                    row.style.display = (index >= start && index < end) ? '' : 'none';
+                });
+
+                renderPaginationControls();
+            }
+
+            function renderPaginationControls() {
+                let pagination = table.nextElementSibling;
+                if (!pagination || !pagination.classList.contains('pagination')) {
+                    pagination = document.createElement('div');
+                    pagination.className = 'pagination';
+                    table.parentNode.insertBefore(pagination, table.nextSibling);
+                }
+                pagination.innerHTML = '';
+
+                const prevBtn = document.createElement('button');
+                prevBtn.textContent = 'Prev';
+                prevBtn.disabled = currentPage === 1;
+                prevBtn.addEventListener('click', () => renderPage(currentPage - 1));
+                pagination.appendChild(prevBtn);
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.textContent = i;
+                    if (i === currentPage) btn.classList.add('active');
+                    btn.addEventListener('click', () => renderPage(i));
+                    pagination.appendChild(btn);
+                }
+
+                const nextBtn = document.createElement('button');
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = currentPage === totalPages;
+                nextBtn.addEventListener('click', () => renderPage(currentPage + 1));
+                pagination.appendChild(nextBtn);
+            }
+
+            renderPage(1);
+
+            paginationInstances[tableId] = {
+                renderPage,
+                paginationElement: table.nextElementSibling
+            };
+        }
+
+
+        // Apply pagination to tables
+        document.addEventListener('DOMContentLoaded', () => {
+            paginateTable('libraryListBody'.replace('Body', ''), 5); // dashboard table id: libraryList
+            paginateTable('librariesTable', 5); // admin libraries index table id
+            paginateTable('booksTable', 5); // admin books index table id
+        });
+
+        function updateLibraryList() {
+            if (userLat === null || userLng === null) {
+                libraryListBody.innerHTML = '<tr><td colspan="4" class="text-center p-4 mb-4">Waiting for GPS location...</td></tr>';
+                return;
+            }
+            // Calculate distances and sort libraries by distance ascending
+            libraries.forEach(library => {
+                library.distance = getDistanceFromLatLonInKm(userLat, userLng, library.latitude, library.longitude);
+            });
+            libraries.sort((a, b) => a.distance - b.distance);
+
+            let rows = '';
+            for (let i = 0; i < libraries.length; i++) {
+                const library = libraries[i];
+                let distanceToNext = '';
+                if (i < libraries.length - 1) {
+                    distanceToNext = getDistanceFromLatLonInKm(
+                        library.latitude, library.longitude,
+                        libraries[i + 1].latitude, libraries[i + 1].longitude
+                    ).toFixed(2);
+                }
+                rows += `<tr>
+                    <td class="border border-gray-300 px-4 py-2">${library.name}</td>
+                    <td class="border border-gray-300 px-4 py-2">${library.distance.toFixed(2)} Km</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <button onclick="panToMarker(${i})" class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">Go to Marker</button>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${library.latitude},${library.longitude}" target="_blank" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">Open Maps</a>
+                    </td>
+                </tr>`;
+            }
+            libraryListBody.innerHTML = rows;
+
+            // Reapply pagination after updating the table rows
+            paginateTable('libraryList', 5);
+        }
     </script>
 </x-layout>
 
